@@ -3,7 +3,7 @@
 This is a pipeline for snCUT&Tag data analysis.
 
 
-# Bioinformatics analysis
+#### Bioinformatics analysis procedures:
 
 # Map the raw reads to reference genome
 Use cellranger-atac count from 10x Genomics to map the reads and generate the possorted_bam.bam and fragments.tsv.gz files for downstream analysis.
