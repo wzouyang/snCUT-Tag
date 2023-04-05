@@ -1,4 +1,4 @@
-# Introduction of snCUT&Tag
+# Introduction of snCUT&Tag bioinformatic pipeline
 
 This is a pipeline for snCUT&Tag data analysis.
 
