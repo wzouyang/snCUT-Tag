@@ -1,6 +1,6 @@
 # Introduction of snCUT&Tag
 
-This is a ipeline for snCUT&Tag data analysis.
+This is a pipeline for snCUT&Tag data analysis.
 
 
 # Bioinformatics analysis
