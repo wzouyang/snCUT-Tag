@@ -1,6 +1,6 @@
 # Introduction of snCUT&Tag
 
-Pipelines for H3K4me3 snCUT&Tag data analysis in Rice.
+This is a ipeline for snCUT&Tag data analysis.
 
 
 # Bioinformatics analysis
