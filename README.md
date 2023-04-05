@@ -1,9 +1,9 @@
-# Introduction of snCUT&Tag bioinformatic pipeline
+## Introduction of snCUT&Tag bioinformatic pipeline
 
 This is a pipeline for snCUT&Tag data analysis.
 
 
-# Bioinformatics analysis procedures:
+## Bioinformatics analysis procedures:
 
 ### Map the raw reads to reference genome
 Use cellranger-atac count from 10x Genomics to map the reads and generate the possorted_bam.bam and fragments.tsv.gz files for downstream analysis.
@@ -20,7 +20,7 @@ Use the FRiP_score_simulate_01.sh and FRiP_score_simulate_02.R scripts to calcul
 ### ABC model
 Predict chromatin interaction using the ABC_model.sh scripts.
 
-# Note
+## Note
 The results obtained may slightly vary when different versions of softwares, such as Cell Ranger ATAC (In this pipeline, Cell Ranger ATAC v1.2 was used) and so on, are used.
 
 For more information and experiment details, please refer to:
