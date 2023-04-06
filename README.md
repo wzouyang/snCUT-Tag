@@ -1,9 +1,9 @@
-## Introduction of snCUT&Tag bioinformatic pipeline
+# Introduction of snCUT&Tag bioinformatic pipeline
 
 This is a pipeline for snCUT&Tag data analysis.
 
 
-## Bioinformatics analysis procedures:
+# Bioinformatics analysis procedures:
 
 ### Prepare a config file (RefGenome.config) for reference genome creation as below:
 
@@ -77,23 +77,23 @@ $ DimPlot(seurat_object_gene, reduction = "umap")
 
 ### Find marker peaks for each cluster and visualize the results either by bubble plot or heatmap.
 
-$ seurat_object_gene.markers <− FindAllMarkers(seurat_object_gene, only.pos = TRUE, min.pct = 0.1, logfc.threshold = 0.25)
-$ top5 <− seurat_object_gene.markers %>% dplyr::filter(p_val_adj < 0.05) %>% group_by(cluster) %>% top_n(n = 3, wt = avg_log2FC)
-$ DotPlot(seurat_object_gene, features = unique(top5$gene)) + RotatedAxis()
-$ DoHeatmap(seurat_object_gene, features = top5$gene) + NoLegend() + theme(legend.position = "none", axis.text.y = element_text(size = 6))
+- $ seurat_object_gene.markers <− FindAllMarkers(seurat_object_gene, only.pos = TRUE, min.pct = 0.1, logfc.threshold = 0.25)
+- $ top5 <− seurat_object_gene.markers %>% dplyr::filter(p_val_adj < 0.05) %>% group_by(cluster) %>% top_n(n = 3, wt = avg_log2FC)
+- $ DotPlot(seurat_object_gene, features = unique(top5$gene)) + RotatedAxis()
+- $ DoHeatmap(seurat_object_gene, features = top5$gene) + NoLegend() + theme(legend.position = "none", axis.text.y = element_text(size = 6))
 
 ### Generate bw files for visualization of each single cells.
 
-$ bash Individual_scBW.sh
+- $ bash Individual_scBW.sh
 
 ### Calculate FRiP cores.
 
-$ bash FRiP_score_simulate_01.sh
+- $ bash FRiP_score_simulate_01.sh
 
 ### Predict chromatin interactions using the ABC model.
-$ bash ABC_model.sh
+- $ bash ABC_model.sh
 
-## Note
+# Note
 The results obtained may slightly vary when different versions of softwares, such as Cell Ranger ATAC (In this pipeline, Cell Ranger ATAC v1.2 was used) and so on, are used.
 
 For more information and experiment details, please refer to:
