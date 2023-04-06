@@ -17,7 +17,7 @@ library(GenomicRanges);
 
 set.seed(1)
 
-#Note that this pipeline use cellranger-atac count(v1.2) results as input
+#Note that this pipeline use cellranger-atac count (v1.2) results (possorted_bam.bam and fragments.tsv.gz files) as input files
 
 ########### Arguments parser
 parser <- ArgumentParser()
@@ -47,7 +47,7 @@ peak_barcodes_file <- 'peaks_barcodes.txt'
 metadata_file      <- 'metadata.csv'
 
 
-#### Create genome annotation
+#### Create genome annotation file
 rice_gff <-import.gff(con = "MH63RS2.LNNK00000000.v2_4.gtf")
 seqlengths(rice_gff) <- c("Chr01" = 44512328,"Chr02"=36671280,"Chr03"=39351490,"Chr04"=36167251,"Chr05"=30881543,"Chr06"=31652805,"Chr07"=29891017,"Chr08"=29797537,"Chr09"=24332368,"Chr10"=25127214,"Chr11"=32883170,"Chr12"=26156356)
 rice_gff_chr <- renameSeqlevels(rice_gff, c(Chr01="chr1",Chr02="chr2",Chr03="chr3",Chr04="chr4",Chr05="chr5",Chr06="chr6",Chr07="chr7",Chr08="chr8",Chr09="chr9",Chr10="chr10",Chr11="chr11",Chr12="chr12"))
@@ -58,7 +58,7 @@ genebodyandpromoter.coords.flat <- Signac::Extend(genebody.coords.flat,upstream 
 genebodyandpromoter.coords.flat$name<- genebody.coords[nearest(genebodyandpromoter.coords.flat,genebody.coords)]$symbol
 
 
-########## remould metadata file information
+########## prepare metadata file
 metadata = read.csv(metadata_file, header = 1)
 metadata = metadata[2:nrow(metadata),]
 metadata$logUMI = log10(metadata$passed_filters + 1)
@@ -77,7 +77,7 @@ metadata <- metadata[metadata$is__cell_barcode==1,]
 write.table(metadata, file=paste0(args$out_prefix,'origine_cell_metadata.tsv'),row.names = FALSE,quote = FALSE, sep='\t')
 
 
-########## Cell filter
+########## Cell filtering
 metadata$is__cell_barcode <- as.factor(metadata$is__cell_barcode)
 metadata[,"passed"] <- FALSE
 metadata[metadata$all_unique_reads > 10^cutoff_reads_min &
@@ -156,7 +156,7 @@ DoHeatmap(seurat_object_gene, features = top5$gene) + NoLegend() + theme(legend.
 DotPlot(seurat_object_gene, features = unique(top2$gene)) + RotatedAxis()
 
 
-###### Export bw file per cluster
+###### Export bw file for each cell cluster
 fragments.path <- 'fragments.tsv.gz'
 fragments <- rtracklayer::import(con = fragments.path,format = 'bed')
 chrom.sizes <- read.table("Chromosize.txt",,sep="\t",stringsAsFactors = FALSE)
@@ -189,5 +189,3 @@ exportBW <- function(object,cluster,fragments){
 lapply(levels(seurat_object_gene@active.ident),function(x){
   exportBW(seurat_object_gene,x,fragments)
 })
-
-
