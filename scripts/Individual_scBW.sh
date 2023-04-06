@@ -19,7 +19,7 @@ java -jar ${EBROOTPICARD}/picard.jar MarkDuplicates REMOVE_DUPLICATES=true I=./$
 num1=10000000
 num2="$(samtools view -c  $i  2>&1 )"
 res=$(printf "%.5f" `echo "scale=5;$num1/$num2"|bc`)
-samtools index -b ${sample}_rmdup_picard.bam && bamCoverage --scaleFactor $res -b ${sample}_rmdup_picard.bam -o ./${sample}.10M.bw
+samtools index -b ${sample}_rmdup_picard.bam && bamCoverage --scaleFactor $res -b ${sample}_rmdup_picard.bam -o ./${sample}.bw
 done
 
 
