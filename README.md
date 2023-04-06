@@ -86,9 +86,10 @@ This is a pipeline for snCUT&Tag data analysis.
 
 - $ bash Individual_scBW.sh
 
-### Calculate FRiP cores.
+### Calculate FRiP cores and visualize using violin plots.
 
 - $ bash FRiP_score_simulate_01.sh
+- $ Rscript FRiP_score_simulate_02.R
 
 ### Predict chromatin interactions using the ABC model.
 - $ bash ABC_model.sh
