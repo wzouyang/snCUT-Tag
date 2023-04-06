@@ -12,7 +12,7 @@ This is a pipeline for snCUT&Tag data analysis.
   GENE_ANNOTATION_INPUT: "RefGenome.gff3",
   MOTIF_INPUT: "",
   ORGANISM: "Oryza Sativa",
-  PRIMARY_CONTIGS: ["chr1","chr2","chr3","chr4","chr5","chr6","chr7","chr8","chr9","chr10","chr11","chr12"],
+  PRIMARY_CONTIGS: ["Chr01","Chr02","Chr03","Chr04","Chr05","Chr06","Chr07","Chr08","Chr09","Chr10","Chr11","Chr12"],
   NON_NUCLEAR_CONTIGS: []
   }
 
