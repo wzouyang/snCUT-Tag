@@ -7,73 +7,73 @@ This is a pipeline for snCUT&Tag data analysis.
 
 ### Prepare a config file (RefGenome.config) for reference genome creation as below:
 
-{
-GENOME_FASTA_INPUT: "RefGenome.fasta",
-GENE_ANNOTATION_INPUT: "RefGenome.gff3",
-MOTIF_INPUT: "",
-ORGANISM: "Oryza Sativa",
-PRIMARY_CONTIGS: ["chr1","chr2","chr3","chr4","chr5","chr6","chr7","chr8","chr9","chr10","chr11","chr12"],
-NON_NUCLEAR_CONTIGS: []
-}
+- {
+  GENOME_FASTA_INPUT: "RefGenome.fasta",
+  GENE_ANNOTATION_INPUT: "RefGenome.gff3",
+  MOTIF_INPUT: "",
+  ORGANISM: "Oryza Sativa",
+  PRIMARY_CONTIGS: ["chr1","chr2","chr3","chr4","chr5","chr6","chr7","chr8","chr9","chr10","chr11","chr12"],
+  NON_NUCLEAR_CONTIGS: []
+  }
 
 ### Construct a custom reference genome using the cellranger-atac mkref function.
 
-$ cellranger-atac mkref RefGenomeName --config RefGenome.config
+- $ cellranger-atac mkref RefGenomeName --config RefGenome.config
 
 ### Map the sequencing reads (fastq files in the DataDir directory) to reference genome and count barcodes using the cellranger-atac count function. The function also perform analysis including identification of Tn5 cut sites, detection of peaks, cell calling, and count matrix generation. As a result, files such as possorted_bam.bam and fragments.tsv.gz are generated for downstream analysis.
 
-$ cellranger-atac count --id=idName --reference=Path/RefGenomeName --fastqs=Path/DataDir
+- $ cellranger-atac count --id=idName --reference=Path/RefGenomeName --fastqs=Path/DataDir
 
 ### General analysis using R packages. Input files generated from the cellreanger-atac count outputs in Step 45:
 
-$ fragments <− 'fragments.tsv.gz'
-$ all_barcodes_file <− 'all_barcodes.txt'
-$ peak_barcodes_file <− 'peaks_barcodes.txt'
-$ metadata_file <− 'metadata.csv'
+- $ fragments <− 'fragments.tsv.gz'
+- $ all_barcodes_file <− 'all_barcodes.txt'
+- $ peak_barcodes_file <− 'peaks_barcodes.txt'
+- $ metadata_file <− 'metadata.csv'
 
 ### Create genome annotation files
 
-$ rice_gff <− import.gff(con = "RefGenome.gtf")
-$ seqlengths(rice_gff) <− c("Chr01" = 44512328,"Chr02"=36671280,"Chr03"=39351490,"Chr04"=36167251,"Chr05"=30881543,"Chr06"=31652805,"Chr07"=29891017,"Chr08"=29797537,"Chr09"=24332368,"Chr10"=25127214,"Chr11"=32883170,"Chr12"=26156356)
-$ genebody.coords <− rice_gff [rice_gff$type=="gene",]
-$ genebody.coords[is.na(genebody.coords$symbol),]$symbol <− genebody.coords[is.na(genebody.coords$symbol),]$Name
-$ genebody.coords.flat <− GenomicRanges::reduce(x = genebody.coords)
-$ genebodyandpromoter.coords.flat <− Signac::Extend(genebody.coords.flat,upstream = 2000)
-$ genebodyandpromoter.coords.flat$name <− genebody.coords[nearest(genebodyandpromoter.coords.flat,genebody.coords)]$symbol
+- $ rice_gff <− import.gff(con = "RefGenome.gtf")
+- $ seqlengths(rice_gff) <− c("Chr01" = 44512328,"Chr02"=36671280,"Chr03"=39351490,"Chr04"=36167251,"Chr05"=30881543,"Chr06"=31652805,"Chr07"=29891017,"Chr08"=29797537,"Chr09"=24332368,"Chr10"=25127214,"Chr11"=32883170,"Chr12"=26156356)
+- $ genebody.coords <− rice_gff [rice_gff$type=="gene",]
+- $ genebody.coords[is.na(genebody.coords$symbol),]$symbol <− genebody.coords[is.na(genebody.coords$symbol),]$Name
+- $ genebody.coords.flat <− GenomicRanges::reduce(x = genebody.coords)
+- $ genebodyandpromoter.coords.flat <− Signac::Extend(genebody.coords.flat,upstream = 2000)
+- $ genebodyandpromoter.coords.flat$name <− genebody.coords[nearest(genebodyandpromoter.coords.flat,genebody.coords)]$symbol
 
 ### Generate a gene-activity matrix for identifying high-quality cells according to fragments.tsv.gz file using FeatureMatrix function of the R package Seurat.
 
-$ gene.matrix <− FeatureMatrix(fragments = fragments, features = genebodyandpromoter.coords.flat, cells = gsub(paste0(args$sample,"_"),"",colnames(seurat_object)))
+- $ gene.matrix <− FeatureMatrix(fragments = fragments, features = genebodyandpromoter.coords.flat, cells = gsub(paste0(args$sample,"_"),"",colnames(seurat_object)))
 
 ### Create a Seurat object using the CreatSeuratObject function of the R package Seurat.
 
-$ seurat_object_gene <− CreateSeuratObject(counts = gene.matrix, assay = 'GA', min.features = min_features, min.cells = min_cells)
+- $ seurat_object_gene <− CreateSeuratObject(counts = gene.matrix, assay = 'GA', min.features = min_features, min.cells = min_cells)
 
 ### Normalize the count data.
 
-$ seurat_object_gene <− NormalizeData(seurat_object_gene, normalization.method = 'LogNormalize', scale.factor=10000)
+- $ seurat_object_gene <− NormalizeData(seurat_object_gene, normalization.method = 'LogNormalize', scale.factor=10000)
 
 ### Find high variable features between cells.
 
-$ seurat_object_gene <− FindVariableFeatures(seurat_object_gene, selection.method = "vst", nfeatures = 1000)
+- $ seurat_object_gene <− FindVariableFeatures(seurat_object_gene, selection.method = "vst", nfeatures = 1000)
 
 ### Scale the data.
 
-$ seurat_object_gene <− ScaleData(seurat_object_gene, features = rownames(seurat_object_gene))
+- $ seurat_object_gene <− ScaleData(seurat_object_gene, features = rownames(seurat_object_gene))
 
 ### PCA dimension reduction.
 
-$ seurat_object_gene <− RunPCA(seurat_object_gene, features = VariableFeatures(object = seurat_object_gene))
-$ VizDimLoadings(seurat_object_gene, dims = 1:2, reduction = "pca")
-$ DimPlot(seurat_object_gene, reduction = "pca")
-$ DimHeatmap(seurat_object_gene, dims = , cells = , balanced = TRUE)
+- $ seurat_object_gene <− RunPCA(seurat_object_gene, features = VariableFeatures(object = seurat_object_gene))
+- $ VizDimLoadings(seurat_object_gene, dims = 1:2, reduction = "pca")
+- $ DimPlot(seurat_object_gene, reduction = "pca")
+- $ DimHeatmap(seurat_object_gene, dims = , cells = , balanced = TRUE)
 
 ### Run the Uniform Manifold Approximation and Projection (UMAP) dimensional reduction.
 
-$ seurat_object_gene <− FindNeighbors(seurat_object_gene, dims = 2:20)
-$ seurat_object_gene <− FindClusters(seurat_object_gene, resolution = 0.6)
-$ seurat_object_gene <− RunUMAP(seurat_object_gene, dims = 2:20)
-$ DimPlot(seurat_object_gene, reduction = "umap")
+- $ seurat_object_gene <− FindNeighbors(seurat_object_gene, dims = 2:20)
+- $ seurat_object_gene <− FindClusters(seurat_object_gene, resolution = 0.6)
+- $ seurat_object_gene <− RunUMAP(seurat_object_gene, dims = 2:20)
+- $ DimPlot(seurat_object_gene, reduction = "umap")
 
 ### Find marker peaks for each cluster and visualize the results either by bubble plot or heatmap.
 
